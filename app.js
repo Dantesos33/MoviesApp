@@ -6,10 +6,13 @@ const options = {
     }
 };
 
+
 const search_btn = document.querySelector(".movies__search button");
 const search_input = document.querySelector(".movies__search input");
 const movie_grid = document.querySelector(".movies__grid");
-let url ;
+let url;
+let pop_up = document.querySelector('.pop-up');
+let close_popup = document.querySelector('.close-btn');
 
 let getMovies = async (url) => {
     try {
@@ -21,10 +24,10 @@ let getMovies = async (url) => {
             let list = document.createElement('div');
             list.innerHTML = `<div class="movies__col">
             <img class="movie__img" src="${movie.titlePosterImageModel.url
-            }">
+                }">
             <p class="movie__name">${movie.titleNameText}</p>
         </div>`;
-        movie_grid.appendChild(list);
+            movie_grid.appendChild(list);
         });
     } catch (error) {
         console.error(error);
@@ -32,25 +35,44 @@ let getMovies = async (url) => {
 }
 
 
-const popularMovies = () => {
-    url = `https://imdb146.p.rapidapi.com/v1/find/?query=avengers`;
-    getMovies(url);
-    url = `https://imdb146.p.rapidapi.com/v1/find/?query=batman`;
-    getMovies(url);
-    url = `https://imdb146.p.rapidapi.com/v1/find/?query=johnwick`;
-    getMovies(url);
-}
+// const popularMovies = () => {
+//     url = `https://imdb146.p.rapidapi.com/v1/find/?query=avengers`;
+//     getMovies(url);
+//     url = `https://imdb146.p.rapidapi.com/v1/find/?query=johnwick`;
+//     getMovies(url);
+// }
 
-window.addEventListener("load",popularMovies());
-
-search_btn.addEventListener("click", () => {
+// window.addEventListener("load",popularMovies());
+window.addEventListener("keydown", (e) => {
     movie_grid.innerHTML = "";
     if (search_input.value === "") {
-        popularMovies();
+        movie_grid.innerHTML = "";
+        // popularMovies();
     }
-    else {
+    if (search_input.value === "" && e.code == "Enter") {
+        movie_grid.innerHTML = "";
+        pop_up.classList.add("pop-up-active");
+    }
+    else if (e.code == "Enter") {
+        movie_grid.innerHTML = "";
         url = `https://imdb146.p.rapidapi.com/v1/find/?query=${search_input.value}`;
         getMovies(url);
     }
+});
+
+search_btn.addEventListener("click", () => {
+    if (search_input.value === "") {
+        movie_grid.innerHTML = "";
+        pop_up.classList.add("pop-up-active");
+    }
+    else{
+        movie_grid.innerHTML = "";
+        url = `https://imdb146.p.rapidapi.com/v1/find/?query=${search_input.value}`;
+        getMovies(url);
+    }
+});
+
+close_popup.addEventListener("click",() => {
+    pop_up.classList.remove("pop-up-active");
 });
 
